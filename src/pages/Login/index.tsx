@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Button,
   FormControl,
