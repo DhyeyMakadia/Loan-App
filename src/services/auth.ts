@@ -1,8 +1,6 @@
 import { AxiosResponse } from "axios";
 import httpClient from "services/httpClient";
 
-const controller = "";
-
 type SignUpRequest = {
   name: string;
   mobile_number: string;
@@ -32,12 +30,12 @@ class AuthService {
   signIn = async (
     signInRequest: Request
   ): Promise<AxiosResponse<LoginResponse>> =>
-    httpClient.post(`${controller}/login`, signInRequest);
+    httpClient.post(`/login`, signInRequest);
 
   signUp = async (
     signUpRequest: SignUpRequest
   ): Promise<AxiosResponse<SignUpResponse>> =>
-    httpClient.post(`${controller}/createUser`, signUpRequest);
+    httpClient.post(`/createUser`, signUpRequest);
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
