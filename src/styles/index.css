@@ -1,3 +1,8 @@
+:root {
+  --black: #2b2b2b;
+  --green: #008264;
+}
+
 html,
 body,
 div,
@@ -141,7 +146,7 @@ body {
   font-weight: 400;
   font-size: 15px;
   line-height: 20px;
-  background-color: #fafafa;
+  background-color: #4c4c4c !important;
   color: #4b4b4b;
   -ms-overflow-style: scrollbar;
   -webkit-font-smoothing: subpixel-antialiased;
@@ -235,13 +240,7 @@ input[type="search"]::-webkit-search-results-decoration {
   align-items: center;
   gap: 10px;
 }
-.logo .MuiTypography-caption {
-  font-size: 30px;
-  line-height: 36px;
-  font-weight: 600;
-  color: #005595;
-  white-space: nowrap;
-}
+
 .login-wrapper {
   min-height: 100vh;
   background: url("../shared/assets/images/login-bg.jpg") center no-repeat;
@@ -313,14 +312,15 @@ input[type="search"]::-webkit-search-results-decoration {
   font-size: 30px;
 }
 .login-wrapper .login-main .MuiAvatar-img {
-    width: 24px;
-    height: 24px;
+  width: 24px;
+  height: 24px;
 }
 .login-wrapper .action-wrapper {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 12px;
+  color: #008264;
 }
 
 .custom-link {
@@ -339,12 +339,47 @@ input[type="search"]::-webkit-search-results-decoration {
   width: 0;
   height: 1px;
   transition: width 0.3s ease-out;
-  background-color: #005595;
+  background-color: var(--green);
+  color: var(--black);
 }
 .custom-link:hover::after,
 .custom-link:focus::after {
   width: 100%;
 }
 
+.MuiSlider-markLabel[data-index="0"] {
+  transform: translateX(0%);
+}
+.MuiSlider-markLabel[data-index="3"] {
+  transform: translateX(-100%);
+}
 
-/* ====================== Header ========================= */
+.custom-radio span.MuiFormControlLabel-label {
+  font-size: 14px;
+}
+
+.custom-bg-green {
+  background-color: var(--green) !important;
+}
+
+.custom-color {
+  color: var(--green) !important;
+}
+
+.custom-bg {
+  background-color: var(--black) !important;
+}
+
+.apply-btn-loader {
+  color: white !important;
+  font-size: 14px;
+  width: 14px;
+  margin-left: 10px;
+}
+
+.card.MuiPaper-root {
+  background-color: var(--black);
+  color: var(--green);
+  margin-bottom: 20px;
+  margin-top: 20px;
+}

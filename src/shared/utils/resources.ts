@@ -5,7 +5,7 @@ export const BaseError = {
   
   export const ValidationMessage = {
     // Required
-    EmailRequired: `Email ${BaseError.Required}`,
+    MobileRequired: `Mobile Number ${BaseError.Required}`,
     PasswordRequired: `Password ${BaseError.Required}`,
     NameRequired: `Name ${BaseError.Required}`,
     FirstNameRequired: `First Name ${BaseError.Required}`,

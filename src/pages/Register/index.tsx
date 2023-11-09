@@ -8,25 +8,31 @@ import {
   Avatar,
   OutlinedInput,
   FormHelperText,
+  CircularProgress,
 } from "@mui/material";
 import { images } from "../../shared/assets/images/index";
 import { ErrorMessage, Form, Formik, FormikValues } from "formik";
 import * as Yup from "yup";
 import { ValidationMessage } from "shared/utils/resources";
-// import AuthService from "services/auth";
+import AuthService from "services/auth";
 // import { StatusCode } from "shared/constants";
 import { useToasts } from "react-toast-notifications";
 import { Helmet } from "react-helmet-async";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "shared/constants/routes";
 // import Cookies from "js-cookie";
 
 const RegisterPage = () => {
+  const { addToast } = useToasts();
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
+  const [showLoader, setShowLoader] = useState<boolean>(false);
 
   const validationSchema = Yup.object().shape({
-    email: Yup.string()
-      .email(ValidationMessage.InvalidEmail)
-      .required(ValidationMessage.EmailRequired),
+    name: Yup.string().required(ValidationMessage.NameRequired),
+    mobile_number: Yup.string().required(ValidationMessage.MobileRequired),
     password: Yup.string().required(ValidationMessage.PasswordRequired),
     confirmPassword: Yup.string()
       .oneOf(
@@ -36,8 +42,37 @@ const RegisterPage = () => {
       .required(ValidationMessage.PasswordRequired),
   });
 
-  const handleSignIn = (values: FormikValues) => {
-    console.log("values", values);
+  const handleSignUp = (values: FormikValues) => {
+    const payload = {
+      name: values.name,
+      mobile_number: values.mobile_number,
+      password: values.password,
+    };
+    setShowLoader(true);
+    AuthService.signUp(payload)
+      .then((response) => {
+        if (!response.data || !response.data.success) {
+          addToast(ValidationMessage.SomethingWentWrong, {
+            appearance: "error",
+            autoDismiss: true,
+          });
+        }
+        if (response.data.success) {
+          addToast(response.data.message, {
+            appearance: "success",
+            autoDismiss: true,
+          });
+          navigate(ROUTES.LOGIN);
+        }
+        setShowLoader(false);
+      })
+      .catch((err) => {
+        setShowLoader(false);
+        addToast(ValidationMessage.SomethingWentWrong, {
+          appearance: "error",
+          autoDismiss: true,
+        });
+      });
   };
   return (
     <>
@@ -49,12 +84,13 @@ const RegisterPage = () => {
           <div className="login-main">
             <Formik
               initialValues={{
-                email: "",
+                name: "",
+                mobile_number: "",
                 password: "",
                 confirmPassword: "",
               }}
               validationSchema={validationSchema}
-              onSubmit={handleSignIn}
+              onSubmit={handleSignUp}
               enableReinitialize
             >
               {({
@@ -70,14 +106,15 @@ const RegisterPage = () => {
                   <FormControl
                     variant="outlined"
                     fullWidth
+                    color="success"
                     sx={{ pb: "20px" }}
-                    error={!!(errors.email && touched.email)}
+                    error={!!(errors.name && touched.name)}
                   >
-                    <InputLabel htmlFor="email">Username</InputLabel>
+                    <InputLabel htmlFor="name">Name</InputLabel>
                     <OutlinedInput
-                      name="email"
+                      name="name"
                       type="text"
-                      value={values.email}
+                      value={values.name}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       endAdornment={
@@ -85,22 +122,50 @@ const RegisterPage = () => {
                           <Avatar src={images.UserIC} title="User" />
                         </InputAdornment>
                       }
-                      label="Username"
+                      label="Name"
                     />
                     <FormHelperText error>
-                      <ErrorMessage name="email" />
+                      <ErrorMessage name="name" />
                     </FormHelperText>
                   </FormControl>
                   <FormControl
                     variant="outlined"
                     fullWidth
+                    color="success"
+                    sx={{ pb: "20px" }}
+                    error={!!(errors.mobile_number && touched.mobile_number)}
+                  >
+                    <InputLabel htmlFor="mobile_number">
+                      Mobile Number
+                    </InputLabel>
+                    <OutlinedInput
+                      name="mobile_number"
+                      type="text"
+                      value={values.mobile_number}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      // endAdornment={
+                      //   <InputAdornment position="end">
+                      //     <Avatar src={images.UserIC} title="User" />
+                      //   </InputAdornment>
+                      // }
+                      label="Mobile Number"
+                    />
+                    <FormHelperText error>
+                      <ErrorMessage name="mobile_number" />
+                    </FormHelperText>
+                  </FormControl>
+                  <FormControl
+                    variant="outlined"
+                    fullWidth
+                    color="success"
                     sx={{ pb: "12px" }}
                     error={!!(errors.password && touched.password)}
                   >
                     <InputLabel htmlFor="password">Password</InputLabel>
                     <OutlinedInput
                       name="password"
-                      type={showPassword ? "password" : "text"}
+                      type={showPassword ? "text" : "password"}
                       value={values.password}
                       onChange={handleChange}
                       onBlur={handleBlur}
@@ -112,7 +177,7 @@ const RegisterPage = () => {
                           >
                             <Avatar
                               src={
-                                showPassword
+                                !showPassword
                                   ? images.ShowPasswordIC
                                   : images.HidePasswordIC
                               }
@@ -132,13 +197,18 @@ const RegisterPage = () => {
                   <FormControl
                     variant="outlined"
                     fullWidth
+                    color="success"
                     sx={{ pb: "12px" }}
-                    error={!!(errors.confirmPassword && touched.confirmPassword)}
+                    error={
+                      !!(errors.confirmPassword && touched.confirmPassword)
+                    }
                   >
-                    <InputLabel htmlFor="confirmPassword">Confirm Password</InputLabel>
+                    <InputLabel htmlFor="confirmPassword">
+                      Confirm Password
+                    </InputLabel>
                     <OutlinedInput
                       name="confirmPassword"
-                      type={showConfirmPassword ? "password" : "text"}
+                      type={showConfirmPassword ? "text" : "password"}
                       value={values.confirmPassword}
                       onChange={handleChange}
                       onBlur={handleBlur}
@@ -146,16 +216,20 @@ const RegisterPage = () => {
                         <InputAdornment position="end">
                           <IconButton
                             edge="end"
-                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            onClick={() =>
+                              setShowConfirmPassword(!showConfirmPassword)
+                            }
                           >
                             <Avatar
                               src={
-                                showConfirmPassword
+                                !showConfirmPassword
                                   ? images.ShowPasswordIC
                                   : images.HidePasswordIC
                               }
                               title={
-                                showConfirmPassword ? "Show Password" : "Hide Password"
+                                showConfirmPassword
+                                  ? "Show Password"
+                                  : "Hide Password"
                               }
                             />
                           </IconButton>
@@ -170,11 +244,22 @@ const RegisterPage = () => {
                   <Button
                     variant="contained"
                     type="submit"
-                    className="btn-dark"
+                    className="custom-bg-green"
                     fullWidth
                     title="confirmPassword"
+                    disabled={showLoader}
                   >
-                    Register
+                    {showLoader ? (
+                      <>
+                        Loading{" "}
+                        <CircularProgress
+                          className="apply-btn-loader"
+                          size={"small"}
+                        />
+                      </>
+                    ) : (
+                      "Register"
+                    )}
                   </Button>
                 </Form>
               )}

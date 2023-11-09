@@ -8,29 +8,87 @@ import {
   Avatar,
   OutlinedInput,
   FormHelperText,
+  CircularProgress
 } from "@mui/material";
 import { images } from "../../shared/assets/images/index";
 import { ErrorMessage, Form, Formik, FormikValues } from "formik";
 import * as Yup from "yup";
 import { ValidationMessage } from "shared/utils/resources";
-// import AuthService from "services/auth";
+import AuthService from "services/auth";
 // import { StatusCode } from "shared/constants";
 import { useToasts } from "react-toast-notifications";
 import { Helmet } from "react-helmet-async";
-// import Cookies from "js-cookie";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
+import { StatusCode } from "shared/constants";
+import { ROUTES } from "shared/constants/routes";
 
 const LoginPage = () => {
+  const { addToast } = useToasts();
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showLoader, setShowLoader] = useState<boolean>(false);
 
   const validationSchema = Yup.object().shape({
-    email: Yup.string()
-      .email(ValidationMessage.InvalidEmail)
-      .required(ValidationMessage.EmailRequired),
+    mobile_number: Yup.string().required(ValidationMessage.MobileRequired),
     password: Yup.string().required(ValidationMessage.PasswordRequired),
   });
 
   const handleSignIn = (values: FormikValues) => {
-    console.log("values", values);
+    const payload = {
+      mobile_number: values.mobile_number,
+      password: values.password,
+    };
+    setShowLoader(true);
+    AuthService.signIn(payload)
+      .then((response) => {
+        if (!response.data || !response.data.authToken) {
+          addToast(ValidationMessage.InvalidCredentials, {
+            appearance: "error",
+            autoDismiss: true,
+          });
+          return;
+        }
+        if (response.data) {
+          Cookies.set("auth_token", response.data.authToken);
+          addToast(ValidationMessage.SignInSuccess, {
+            appearance: "success",
+            autoDismiss: true,
+          });
+          navigate(ROUTES.FORM);
+        } else {
+          addToast(ValidationMessage.InvalidCredentials, {
+            appearance: "error",
+            autoDismiss: true,
+          });
+          return;
+        }
+        setShowLoader(false);
+      })
+      .catch((err) => {
+        setShowLoader(false);
+        switch (err?.response?.status) {
+          case StatusCode.Forbidden:
+            addToast(ValidationMessage.InactiveUser, {
+              appearance: "error",
+              autoDismiss: true,
+            });
+            break;
+
+          case StatusCode.Unauthorized:
+            addToast(ValidationMessage.InvalidCredentials, {
+              appearance: "error",
+              autoDismiss: true,
+            });
+            break;
+          default:
+            addToast(ValidationMessage.SomethingWentWrong, {
+              appearance: "error",
+              autoDismiss: true,
+            });
+            break;
+        }
+      });
   };
   return (
     <>
@@ -42,7 +100,7 @@ const LoginPage = () => {
           <div className="login-main">
             <Formik
               initialValues={{
-                email: "",
+                mobile_number: "",
                 password: "",
               }}
               validationSchema={validationSchema}
@@ -62,14 +120,17 @@ const LoginPage = () => {
                   <FormControl
                     variant="outlined"
                     fullWidth
+                    color="success"
                     sx={{ pb: "20px" }}
-                    error={!!(errors.email && touched.email)}
+                    error={!!(errors.mobile_number && touched.mobile_number)}
                   >
-                    <InputLabel htmlFor="email">Username</InputLabel>
+                    <InputLabel htmlFor="mobile_number">
+                      Mobile Number
+                    </InputLabel>
                     <OutlinedInput
-                      name="email"
+                      name="mobile_number"
                       type="text"
-                      value={values.email}
+                      value={values.mobile_number}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       endAdornment={
@@ -77,15 +138,16 @@ const LoginPage = () => {
                           <Avatar src={images.UserIC} title="User" />
                         </InputAdornment>
                       }
-                      label="Username"
+                      label="Mobile Number"
                     />
                     <FormHelperText error>
-                      <ErrorMessage name="email" />
+                      <ErrorMessage name="mobile_number" />
                     </FormHelperText>
                   </FormControl>
                   <FormControl
                     variant="outlined"
                     fullWidth
+                    color="success"
                     sx={{ pb: "12px" }}
                     error={!!(errors.password && touched.password)}
                   >
@@ -124,11 +186,22 @@ const LoginPage = () => {
                   <Button
                     variant="contained"
                     type="submit"
-                    className="btn-dark"
+                    className="custom-bg-green"
                     fullWidth
                     title="Login"
+                    disabled={showLoader}
                   >
-                    Login
+                    {showLoader ? (
+                      <>
+                        Logging in{" "}
+                        <CircularProgress
+                          className="apply-btn-loader"
+                          size={"small"}
+                        />
+                      </>
+                    ) : (
+                      "Login"
+                    )}
                   </Button>
                 </Form>
               )}
