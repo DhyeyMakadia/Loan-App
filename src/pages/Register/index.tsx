@@ -102,7 +102,7 @@ const RegisterPage = () => {
                 handleSubmit,
               }) => (
                 <Form onSubmit={handleSubmit}>
-                  <h1 className="title">Register</h1>
+                  <h1 className="title" style={{color: "white"}}>Register</h1>
                   <FormControl
                     variant="outlined"
                     fullWidth
@@ -117,11 +117,15 @@ const RegisterPage = () => {
                       value={values.name}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      endAdornment={
-                        <InputAdornment position="end">
-                          <Avatar src={images.UserIC} title="User" />
-                        </InputAdornment>
-                      }
+                      inputProps={{
+                        color: "success",
+                        style: {
+                          color: "white",
+                        },
+                        form: {
+                          autocomplete: "off",
+                        },
+                      }}
                       label="Name"
                     />
                     <FormHelperText error>
@@ -143,12 +147,21 @@ const RegisterPage = () => {
                       type="text"
                       value={values.mobile_number}
                       onChange={handleChange}
+                      inputProps={{
+                        color: "success",
+                        style: {
+                          color: "white",
+                        },
+                        form: {
+                          autocomplete: "off",
+                        },
+                      }}
                       onBlur={handleBlur}
-                      // endAdornment={
-                      //   <InputAdornment position="end">
-                      //     <Avatar src={images.UserIC} title="User" />
-                      //   </InputAdornment>
-                      // }
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <Avatar src={images.UserIC} title="User" />
+                        </InputAdornment>
+                      }
                       label="Mobile Number"
                     />
                     <FormHelperText error>
@@ -169,6 +182,12 @@ const RegisterPage = () => {
                       value={values.password}
                       onChange={handleChange}
                       onBlur={handleBlur}
+                      inputProps={{
+                        color: "success",
+                        style: {
+                          color: "white",
+                        },
+                      }}
                       endAdornment={
                         <InputAdornment position="end">
                           <IconButton
@@ -212,6 +231,12 @@ const RegisterPage = () => {
                       value={values.confirmPassword}
                       onChange={handleChange}
                       onBlur={handleBlur}
+                      inputProps={{
+                        color: "success",
+                        style: {
+                          color: "white",
+                        },
+                      }}
                       endAdornment={
                         <InputAdornment position="end">
                           <IconButton
@@ -261,6 +286,21 @@ const RegisterPage = () => {
                       "Register"
                     )}
                   </Button>
+                  <div
+                    style={{
+                      color: "WHITE",
+                      textAlign: "center",
+                      marginTop: "20px",
+                    }}
+                  >
+                    Already Registered? &nbsp;
+                    <a
+                      href="/"
+                      style={{ color: "#008264", textAlign: "center" }}
+                    >
+                      Login here
+                    </a>
+                  </div>
                 </Form>
               )}
             </Formik>

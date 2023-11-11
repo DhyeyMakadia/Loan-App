@@ -4,6 +4,7 @@ import httpClient from "services/httpClient";
 type AddFormRequest = {
   user_id: number;
   amount: number;
+  month: number;
   disbursal: number;
   interest: number;
   repayment: number;
@@ -12,7 +13,18 @@ type AddFormRequest = {
   gst: number;
 };
 
-type LoanAmountResponse = any; // TODO
+type LoanDetails = {
+  id: number;
+  user_id: number;
+  amount: string;
+  month: any;
+};
+
+type LoanAmountResponse = {
+  success: boolean;
+  message: string;
+  data: LoanDetails;
+};
 
 type AddFormResponse = any; // TODO
 

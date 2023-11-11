@@ -8,7 +8,8 @@ import {
   Avatar,
   OutlinedInput,
   FormHelperText,
-  CircularProgress
+  CircularProgress,
+  withStyles,
 } from "@mui/material";
 import { images } from "../../shared/assets/images/index";
 import { ErrorMessage, Form, Formik, FormikValues } from "formik";
@@ -43,6 +44,7 @@ const LoginPage = () => {
     AuthService.signIn(payload)
       .then((response) => {
         if (!response.data || !response.data.authToken) {
+          setShowLoader(false);
           addToast(ValidationMessage.InvalidCredentials, {
             appearance: "error",
             autoDismiss: true,
@@ -51,19 +53,21 @@ const LoginPage = () => {
         }
         if (response.data) {
           Cookies.set("auth_token", response.data.authToken);
+          Cookies.set("user_id", String(response.data.id));
+          setShowLoader(false);
           addToast(ValidationMessage.SignInSuccess, {
             appearance: "success",
             autoDismiss: true,
           });
           navigate(ROUTES.FORM);
         } else {
+          setShowLoader(false);
           addToast(ValidationMessage.InvalidCredentials, {
             appearance: "error",
             autoDismiss: true,
           });
           return;
         }
-        setShowLoader(false);
       })
       .catch((err) => {
         setShowLoader(false);
@@ -116,7 +120,9 @@ const LoginPage = () => {
                 handleSubmit,
               }) => (
                 <Form onSubmit={handleSubmit}>
-                  <h1 className="title">Login</h1>
+                  <h1 className="title" style={{ color: "white" }}>
+                    Login
+                  </h1>
                   <FormControl
                     variant="outlined"
                     fullWidth
@@ -130,12 +136,25 @@ const LoginPage = () => {
                     <OutlinedInput
                       name="mobile_number"
                       type="text"
+                      inputProps={{
+                        color: "success",
+                        style: {
+                          color: "white",
+                        },
+                        form: {
+                          autocomplete: "off",
+                        },
+                      }}
                       value={values.mobile_number}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       endAdornment={
                         <InputAdornment position="end">
-                          <Avatar src={images.UserIC} title="User" />
+                          <Avatar
+                            src={images.UserIC}
+                            title="User"
+                            style={{ color: "black" }}
+                          />
                         </InputAdornment>
                       }
                       label="Mobile Number"
@@ -158,6 +177,12 @@ const LoginPage = () => {
                       value={values.password}
                       onChange={handleChange}
                       onBlur={handleBlur}
+                      inputProps={{
+                        color: "success",
+                        style: {
+                          color: "white",
+                        },
+                      }}
                       endAdornment={
                         <InputAdornment position="end">
                           <IconButton
@@ -203,6 +228,21 @@ const LoginPage = () => {
                       "Login"
                     )}
                   </Button>
+                  <div
+                    style={{
+                      color: "WHITE",
+                      textAlign: "center",
+                      marginTop: "20px",
+                    }}
+                  >
+                    Don't have a account? &nbsp;
+                    <a
+                      href="/register"
+                      style={{ color: "#008264", textAlign: "center" }}
+                    >
+                      Create now
+                    </a>
+                  </div>
                 </Form>
               )}
             </Formik>

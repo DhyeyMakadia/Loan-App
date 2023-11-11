@@ -292,7 +292,7 @@ input[type="search"]::-webkit-search-results-decoration {
   line-height: 26px;
 }
 .login-wrapper .login-main {
-  background-color: #ffffff;
+  background-color: var(--black);
   flex-grow: 1;
   flex-shrink: 1;
   flex-basis: calc(100% - 408px);
@@ -382,4 +382,21 @@ input[type="search"]::-webkit-search-results-decoration {
   color: var(--green);
   margin-bottom: 20px;
   margin-top: 20px;
+}
+
+.login-main
+  .MuiOutlinedInput-root:not(.Mui-error)
+  .MuiOutlinedInput-notchedOutline {
+  border-color: var(--green) !important;
+}
+.login-main
+  .MuiOutlinedInput-root.Mui-focused:not(.Mui-error)
+  .MuiOutlinedInput-notchedOutline {
+  border-color: var(--green) !important;
+}
+.login-main .MuiFormLabel-root:not(.Mui-error) {
+  color: var(--green);
+}
+.login-main .MuiFormLabel-root.Mui-focused:not(.Mui-error) {
+  color: white;
 }

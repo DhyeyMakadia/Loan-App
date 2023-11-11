@@ -31,6 +31,7 @@ httpClient.interceptors.request.use(
     if (config.headers) {
       config.headers["Content-Type"] = "application/json";
     }
+    // config.headers["ngrok-skip-browser-warning"] = "69420";
 
     if (config?.url) {
       requests.push(config?.url);

@@ -1,23 +1,20 @@
 import * as React from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Toolbar from "@mui/material/Toolbar";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
-import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import {
+  Backdrop,
   CircularProgress,
   FormControl,
   FormLabel,
-  Icon,
-  InputLabel,
   Radio,
   RadioGroup,
   Slider,
@@ -48,10 +45,11 @@ const marks = [
 
 export default function Checkout() {
   const navigate = useNavigate();
-
+  const token = Cookies.get("auth_token");
   const [loanAmount, setLoanAmount] = React.useState<number>(50000);
   const [loanTerm, setLoanTerm] = React.useState<number>(6);
   const [applyNow, setApplyNow] = React.useState<boolean>(false);
+  const [showLoader, setShowLoader] = React.useState<boolean>(true);
   const [checked, setChecked] = React.useState<boolean>(false);
   const [isSuccess, setIsSuccess] = React.useState<boolean>(false);
 
@@ -124,8 +122,9 @@ export default function Checkout() {
 
   const handleApplyNow = async () => {
     const payload = {
-      user_id: 1, // TODO
+      user_id: Number(Cookies.get("user_id")),
       amount: loanAmount,
+      month: loanTerm,
       disbursal: loanAmount,
       interest: calculateInterest(),
       repayment: calculateRepayment(),
@@ -133,11 +132,12 @@ export default function Checkout() {
       received_amount: calculateRepayment(),
       gst: calculateGST(),
     };
+    setShowLoader(true);
     setApplyNow(true);
     await FormService.AddForm(payload);
     setTimeout(() => {
       setIsSuccess(true);
-      setApplyNow(false);
+      setShowLoader(false);
     }, 30000);
   };
 
@@ -147,23 +147,51 @@ export default function Checkout() {
 
   const handlePayNow = () => {
     console.log("done");
+    // navigate("URL")
   };
 
   const handleLogout = () => {
     Cookies.remove("auth_token");
+    Cookies.remove("user_id");
     window.location.reload();
   };
 
+  const GetLoanDetails = () => {
+    const id = Number(Cookies.get("user_id"));
+    FormService.GetLoanAmount(id)
+      .then((res) => {
+        setShowLoader(false);
+        if (res.data.data) {
+          setIsSuccess(true);
+          setLoanAmount(Number(res.data.data.amount.split(".")[0]))
+          setLoanTerm(res.data.data.month)
+        }
+      })
+      .catch(() => {
+        setShowLoader(false);
+      });
+  };
+
   React.useEffect(() => {
-    const token = Cookies.get("auth_token");
     if (!token) {
       navigate(ROUTES.LOGIN);
     }
+    GetLoanDetails();
   }, []);
+
+  if (!token) {
+    return <></>;
+  }
 
   return (
     <React.Fragment>
       <CssBaseline />
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={showLoader}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <AppBar
         position="absolute"
         className="custom-bg"
@@ -560,7 +588,7 @@ export default function Checkout() {
             type="button"
             variant="contained"
             className="custom-bg-green"
-            style={{ float: "right" }}
+            style={{ float: "right", marginBottom: "15px" }}
             fullWidth
             onClick={handlePayNow}
             disabled={!checked}
