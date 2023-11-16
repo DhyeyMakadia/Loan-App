@@ -362,6 +362,10 @@ input[type="search"]::-webkit-search-results-decoration {
   background-color: var(--green) !important;
 }
 
+.text-white {
+  color: white !important;
+}
+
 .custom-color {
   color: var(--green) !important;
 }

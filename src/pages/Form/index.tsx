@@ -24,6 +24,7 @@ import { useNavigate } from "react-router-dom";
 import { ROUTES } from "shared/constants/routes";
 import FormService from "services/form";
 import Loader from "components/Loader";
+import PaymentModal from "components/PaymentModal";
 
 const marks = [
   {
@@ -53,6 +54,8 @@ export default function Checkout() {
   const [showLoader, setShowLoader] = React.useState<boolean>(true);
   const [checked, setChecked] = React.useState<boolean>(false);
   const [isSuccess, setIsSuccess] = React.useState<boolean>(false);
+  const [paymentModalOpen, setPaymentModalOpen] =
+    React.useState<boolean>(false);
 
   const handleAmountChange = (event: Event, newValue: number | number[]) => {
     if (typeof newValue === "number") {
@@ -147,8 +150,7 @@ export default function Checkout() {
   };
 
   const handlePayNow = () => {
-    console.log("done");
-    // navigate("URL")
+    setPaymentModalOpen(true);
   };
 
   const handleLogout = () => {
@@ -593,6 +595,11 @@ export default function Checkout() {
           </Button>
         </Container>
       )}
+      <PaymentModal
+        isOpen={paymentModalOpen}
+        money={calculateServiceCharge()}
+        handleClose={() => setPaymentModalOpen(false)}
+      />
     </React.Fragment>
   );
 }
