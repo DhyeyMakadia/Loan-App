@@ -23,6 +23,7 @@ import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "shared/constants/routes";
 import FormService from "services/form";
+import Loader from "components/Loader";
 
 const marks = [
   {
@@ -163,8 +164,8 @@ export default function Checkout() {
         setShowLoader(false);
         if (res.data.data) {
           setIsSuccess(true);
-          setLoanAmount(Number(res.data.data.amount.split(".")[0]))
-          setLoanTerm(res.data.data.month)
+          setLoanAmount(Number(res.data.data.amount.split(".")[0]));
+          setLoanTerm(res.data.data.month);
         }
       })
       .catch(() => {
@@ -186,12 +187,7 @@ export default function Checkout() {
   return (
     <React.Fragment>
       <CssBaseline />
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={showLoader}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      {showLoader && <Loader />}
       <AppBar
         position="absolute"
         className="custom-bg"

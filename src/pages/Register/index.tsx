@@ -18,7 +18,7 @@ import AuthService from "services/auth";
 // import { StatusCode } from "shared/constants";
 import { useToasts } from "react-toast-notifications";
 import { Helmet } from "react-helmet-async";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ROUTES } from "shared/constants/routes";
 // import Cookies from "js-cookie";
 
@@ -102,7 +102,9 @@ const RegisterPage = () => {
                 handleSubmit,
               }) => (
                 <Form onSubmit={handleSubmit}>
-                  <h1 className="title" style={{color: "white"}}>Register</h1>
+                  <h1 className="title" style={{ color: "white" }}>
+                    Register
+                  </h1>
                   <FormControl
                     variant="outlined"
                     fullWidth
@@ -294,12 +296,12 @@ const RegisterPage = () => {
                     }}
                   >
                     Already Registered? &nbsp;
-                    <a
-                      href="/"
+                    <Link
+                      to="/"
                       style={{ color: "#008264", textAlign: "center" }}
                     >
                       Login here
-                    </a>
+                    </Link>
                   </div>
                 </Form>
               )}

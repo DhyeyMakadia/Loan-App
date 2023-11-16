@@ -20,7 +20,7 @@ import AuthService from "services/auth";
 import { useToasts } from "react-toast-notifications";
 import { Helmet } from "react-helmet-async";
 import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { StatusCode } from "shared/constants";
 import { ROUTES } from "shared/constants/routes";
 
@@ -236,12 +236,12 @@ const LoginPage = () => {
                     }}
                   >
                     Don't have a account? &nbsp;
-                    <a
-                      href="/register"
+                    <Link
+                      to="/register"
                       style={{ color: "#008264", textAlign: "center" }}
                     >
                       Create now
-                    </a>
+                    </Link>
                   </div>
                 </Form>
               )}
