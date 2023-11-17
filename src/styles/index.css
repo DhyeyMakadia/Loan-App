@@ -251,6 +251,7 @@ input[type="search"]::-webkit-search-results-decoration {
   justify-content: center;
   position: relative;
 }
+
 .login-wrapper::after {
   content: "";
   position: absolute;
@@ -260,6 +261,7 @@ input[type="search"]::-webkit-search-results-decoration {
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
 }
+
 .login-container {
   display: flex;
   max-width: 700px;
@@ -271,6 +273,7 @@ input[type="search"]::-webkit-search-results-decoration {
   z-index: 1;
   box-shadow: 0 0 32px 0 rgba(0, 0, 0, 0.25);
 }
+
 .login-content {
   background-color: #005595;
   color: #fff;
@@ -282,15 +285,18 @@ input[type="search"]::-webkit-search-results-decoration {
   flex-shrink: 0;
   flex-basis: 408px;
 }
+
 .login-content .inner-content {
   max-width: 330px;
   width: 100%;
   margin: 0 auto;
 }
+
 .login-content .inner-content .MuiTypography-body1 {
   font-size: 18px;
   line-height: 26px;
 }
+
 .login-wrapper .login-main {
   background-color: var(--black);
   flex-grow: 1;
@@ -302,19 +308,23 @@ input[type="search"]::-webkit-search-results-decoration {
   justify-content: center;
   padding: 70px 70px 110px;
 }
+
 .login-wrapper .login-main form {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
+
 .login-wrapper .login-main .title {
   margin: 0 auto 30px;
   font-size: 30px;
 }
+
 .login-wrapper .login-main .MuiAvatar-img {
   width: 24px;
   height: 24px;
 }
+
 .login-wrapper .action-wrapper {
   display: flex;
   align-items: center;
@@ -331,6 +341,7 @@ input[type="search"]::-webkit-search-results-decoration {
   transition: all 0.3s ease-out;
   position: relative;
 }
+
 .custom-link::after {
   content: "";
   position: absolute;
@@ -342,6 +353,7 @@ input[type="search"]::-webkit-search-results-decoration {
   background-color: var(--green);
   color: var(--black);
 }
+
 .custom-link:hover::after,
 .custom-link:focus::after {
   width: 100%;
@@ -350,6 +362,7 @@ input[type="search"]::-webkit-search-results-decoration {
 .MuiSlider-markLabel[data-index="0"] {
   transform: translateX(0%);
 }
+
 .MuiSlider-markLabel[data-index="3"] {
   transform: translateX(-100%);
 }
@@ -388,19 +401,24 @@ input[type="search"]::-webkit-search-results-decoration {
   margin-top: 20px;
 }
 
-.login-main
-  .MuiOutlinedInput-root:not(.Mui-error)
-  .MuiOutlinedInput-notchedOutline {
+.login-main .MuiOutlinedInput-root:not(.Mui-error) .MuiOutlinedInput-notchedOutline {
   border-color: var(--green) !important;
 }
-.login-main
-  .MuiOutlinedInput-root.Mui-focused:not(.Mui-error)
-  .MuiOutlinedInput-notchedOutline {
+
+.login-main .MuiOutlinedInput-root.Mui-focused:not(.Mui-error) .MuiOutlinedInput-notchedOutline {
   border-color: var(--green) !important;
 }
+
 .login-main .MuiFormLabel-root:not(.Mui-error) {
   color: var(--green);
 }
+
 .login-main .MuiFormLabel-root.Mui-focused:not(.Mui-error) {
   color: white;
+}
+
+@media (max-width: 500px) {
+  .login-wrapper .login-main {
+    padding: 30px 30px 80px;
+  }
 }
