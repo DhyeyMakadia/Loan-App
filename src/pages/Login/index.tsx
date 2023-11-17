@@ -173,7 +173,7 @@ const LoginPage = () => {
                     <InputLabel htmlFor="password">Password</InputLabel>
                     <OutlinedInput
                       name="password"
-                      type={showPassword ? "password" : "text"}
+                      type={!showPassword ? "password" : "text"}
                       value={values.password}
                       onChange={handleChange}
                       onBlur={handleBlur}
@@ -191,12 +191,14 @@ const LoginPage = () => {
                           >
                             <Avatar
                               src={
-                                showPassword
+                                !showPassword
                                   ? images.ShowPasswordIC
                                   : images.HidePasswordIC
                               }
                               title={
-                                showPassword ? "Show Password" : "Hide Password"
+                                !showPassword
+                                  ? "Show Password"
+                                  : "Hide Password"
                               }
                             />
                           </IconButton>
