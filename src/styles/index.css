@@ -417,6 +417,10 @@ input[type="search"]::-webkit-search-results-decoration {
   color: white;
 }
 
+.Mui-error.custom-error {
+  margin-left: 0;
+}
+
 @media (max-width: 500px) {
   .login-wrapper .login-main {
     padding: 30px 30px 80px;

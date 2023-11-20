@@ -11,10 +11,12 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import {
-  Backdrop,
   CircularProgress,
   FormControl,
+  FormHelperText,
   FormLabel,
+  InputLabel,
+  OutlinedInput,
   Radio,
   RadioGroup,
   Slider,
@@ -54,6 +56,11 @@ export default function Checkout() {
   const [showLoader, setShowLoader] = React.useState<boolean>(true);
   const [checked, setChecked] = React.useState<boolean>(false);
   const [isSuccess, setIsSuccess] = React.useState<boolean>(false);
+  const [aadhaarNumber, setAadhaarNumber] = React.useState<number | null>(null);
+  const [panNumber, setPanNumber] = React.useState<string>("");
+  const [aadhaarNumberError, setAadhaarNumberError] =
+    React.useState<boolean>(false);
+  const [panNumberError, setPanNumberError] = React.useState<boolean>(false);
   const [paymentModalOpen, setPaymentModalOpen] =
     React.useState<boolean>(false);
 
@@ -125,24 +132,30 @@ export default function Checkout() {
   };
 
   const handleApplyNow = async () => {
-    const payload = {
-      user_id: Number(Cookies.get("user_id")),
-      amount: loanAmount,
-      month: loanTerm,
-      disbursal: loanAmount,
-      interest: calculateInterest(),
-      repayment: calculateRepayment(),
-      service_charge: calculateServiceCharge(),
-      received_amount: calculateRepayment(),
-      gst: calculateGST(),
-    };
-    setShowLoader(true);
-    setApplyNow(true);
-    await FormService.AddForm(payload);
-    setTimeout(() => {
-      setIsSuccess(true);
-      setShowLoader(false);
-    }, 15000);
+    !aadhaarNumber && setAadhaarNumberError(true);
+    !panNumber && setPanNumberError(true);
+    if (aadhaarNumber && panNumber) {
+      const payload = {
+        user_id: Number(Cookies.get("user_id")),
+        amount: loanAmount,
+        month: loanTerm,
+        disbursal: loanAmount,
+        interest: calculateInterest(),
+        repayment: calculateRepayment(),
+        service_charge: calculateServiceCharge(),
+        received_amount: calculateRepayment(),
+        gst: calculateGST(),
+        aadhaar_number: aadhaarNumber,
+        pan_number: panNumber,
+      };
+      setShowLoader(true);
+      setApplyNow(true);
+      await FormService.AddForm(payload);
+      setTimeout(() => {
+        setIsSuccess(true);
+        setShowLoader(false);
+      }, 15000);
+    }
   };
 
   const handleTermsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -180,7 +193,35 @@ export default function Checkout() {
       navigate(ROUTES.LOGIN);
     }
     GetLoanDetails();
+    // eslint-disable-next-line
   }, []);
+
+  const handleAadhaarChange = (event: any) => {
+    let value = event.target.value;
+    value = value.replace(/[^0-9]/g, "");
+    if (value.length > 12) {
+      value = value.slice(0, 12);
+    }
+    if (value) {
+      setAadhaarNumberError(false);
+    } else {
+      setAadhaarNumberError(true);
+    }
+    setAadhaarNumber(value);
+  };
+
+  const handlePanChange = (event: any) => {
+    let value = event.target.value;
+    if (value.length > 10) {
+      value = value.slice(0, 10);
+    }
+    if (value) {
+      setPanNumberError(false);
+    } else {
+      setPanNumberError(true);
+    }
+    setPanNumber(value);
+  };
 
   if (!token) {
     return <></>;
@@ -211,7 +252,12 @@ export default function Checkout() {
         </Toolbar>
       </AppBar>
       {!isSuccess ? (
-        <Container component="main" maxWidth="lg" sx={{ mb: 12 }}>
+        <Container
+          className="login-main"
+          component="main"
+          maxWidth="lg"
+          sx={{ mb: 12 }}
+        >
           <Paper
             variant="outlined"
             className="card"
@@ -227,6 +273,72 @@ export default function Checkout() {
             </Typography>
 
             <React.Fragment>
+              <Grid container spacing={3} paddingTop={3}>
+                <Grid item xs={12} sm={6}>
+                  <FormControl
+                    variant="outlined"
+                    fullWidth
+                    color="success"
+                    sx={{ pb: "20px" }}
+                  >
+                    <InputLabel htmlFor="aadhaar_number">
+                      Aadhaar Number
+                    </InputLabel>
+                    <OutlinedInput
+                      name="aadhaar_number"
+                      type="number"
+                      value={aadhaarNumber}
+                      inputProps={{
+                        color: "success",
+                        style: {
+                          color: "white",
+                        },
+                        form: {
+                          autocomplete: "off",
+                        },
+                      }}
+                      label="Aadhaar Number"
+                      onChange={handleAadhaarChange}
+                    />
+                    {aadhaarNumberError && (
+                      <FormHelperText error className="custom-error">
+                        Aadhaar Number is required
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <FormControl
+                    variant="outlined"
+                    fullWidth
+                    color="success"
+                    sx={{ pb: "20px" }}
+                  >
+                    <InputLabel htmlFor="pan_number">Pan Number</InputLabel>
+                    <OutlinedInput
+                      name="pan_number"
+                      type="text"
+                      inputProps={{
+                        color: "success",
+                        style: {
+                          color: "white",
+                        },
+                        form: {
+                          autocomplete: "off",
+                        },
+                      }}
+                      value={panNumber}
+                      label="Pan Number"
+                      onChange={handlePanChange}
+                    />
+                    {panNumberError && (
+                      <FormHelperText error className="custom-error">
+                        Pan Number is required
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                </Grid>
+              </Grid>
               <Typography
                 variant="h6"
                 gutterBottom

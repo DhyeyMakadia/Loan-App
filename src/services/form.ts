@@ -11,6 +11,8 @@ type AddFormRequest = {
   service_charge: number;
   received_amount: number;
   gst: number;
+  aadhaar_number: number;
+  pan_number: string;
 };
 
 type LoanDetails = {
