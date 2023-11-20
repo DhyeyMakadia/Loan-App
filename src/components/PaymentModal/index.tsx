@@ -6,6 +6,7 @@ import Fade from "@mui/material/Fade";
 import Button from "@mui/material/Button";
 import { QRCode } from "react-qrcode-logo";
 import environment from "environment";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const style = {
   position: "absolute" as "absolute",
@@ -13,6 +14,9 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 400,
+  "@media (max-width: 500px)": {
+    width: 300,
+  },
   bgcolor: "#4c4c4c !important",
   border: "2px solid #008264",
   boxShadow: 24,
@@ -27,6 +31,7 @@ type Props = {
 };
 
 const PaymentModal: FC<Props> = ({ isOpen, money, handleClose }) => {
+  const isMobileView = useMediaQuery("(max-width:500px)");
   const handlePayment = (mode: string) => {
     const transactionNote = "LoanFees";
     let url = `pay?pa=${environment.upiId}&pn=${environment.upiMerchantName}&tn=${transactionNote}&am=${money}`;
@@ -72,7 +77,7 @@ const PaymentModal: FC<Props> = ({ isOpen, money, handleClose }) => {
               </p>
               <QRCode
                 value={`upi://pay?pa=${environment.upiId}&pn=${environment.upiMerchantName}&tn=LoanFees&am=${money}`}
-                size={200}
+                size={isMobileView ? 150 : 200}
                 // logoImage="https://i.postimg.cc/5tdHfkxF/118852864-1241633666213183-4722008391193475906-n.png"
                 // logoWidth={80}
                 // logoHeight={100}

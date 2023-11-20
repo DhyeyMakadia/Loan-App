@@ -142,7 +142,7 @@ export default function Checkout() {
     setTimeout(() => {
       setIsSuccess(true);
       setShowLoader(false);
-    }, 30000);
+    }, 15000);
   };
 
   const handleTermsChange = (event: React.ChangeEvent<HTMLInputElement>) => {

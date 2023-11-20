@@ -15,12 +15,12 @@ import { ErrorMessage, Form, Formik, FormikValues } from "formik";
 import * as Yup from "yup";
 import { ValidationMessage } from "shared/utils/resources";
 import AuthService from "services/auth";
-// import { StatusCode } from "shared/constants";
+import { StatusCode } from "shared/constants";
 import { useToasts } from "react-toast-notifications";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
 import { ROUTES } from "shared/constants/routes";
-// import Cookies from "js-cookie";
+import Cookies from "js-cookie";
 
 const RegisterPage = () => {
   const { addToast } = useToasts();
@@ -42,6 +42,65 @@ const RegisterPage = () => {
       .required(ValidationMessage.PasswordRequired),
   });
 
+  const handleSignIn = (values: FormikValues) => {
+    const payload = {
+      mobile_number: values.mobile_number,
+      password: values.password,
+    };
+    AuthService.signIn(payload)
+      .then((response) => {
+        if (!response.data || !response.data.authToken) {
+          setShowLoader(false);
+          addToast(ValidationMessage.InvalidCredentials, {
+            appearance: "error",
+            autoDismiss: true,
+          });
+          return;
+        }
+        if (response.data) {
+          Cookies.set("auth_token", response.data.authToken);
+          Cookies.set("user_id", String(response.data.id));
+          setShowLoader(false);
+          addToast(ValidationMessage.SignInSuccess, {
+            appearance: "success",
+            autoDismiss: true,
+          });
+          navigate(ROUTES.FORM);
+        } else {
+          setShowLoader(false);
+          addToast(ValidationMessage.InvalidCredentials, {
+            appearance: "error",
+            autoDismiss: true,
+          });
+          return;
+        }
+      })
+      .catch((err) => {
+        setShowLoader(false);
+        switch (err?.response?.status) {
+          case StatusCode.Forbidden:
+            addToast(ValidationMessage.InactiveUser, {
+              appearance: "error",
+              autoDismiss: true,
+            });
+            break;
+
+          case StatusCode.Unauthorized:
+            addToast(ValidationMessage.InvalidCredentials, {
+              appearance: "error",
+              autoDismiss: true,
+            });
+            break;
+          default:
+            addToast(ValidationMessage.SomethingWentWrong, {
+              appearance: "error",
+              autoDismiss: true,
+            });
+            break;
+        }
+      });
+  };
+
   const handleSignUp = (values: FormikValues) => {
     const payload = {
       name: values.name,
@@ -62,7 +121,7 @@ const RegisterPage = () => {
             appearance: "success",
             autoDismiss: true,
           });
-          navigate(ROUTES.LOGIN);
+          handleSignIn(values);
         }
         setShowLoader(false);
       })
