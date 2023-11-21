@@ -479,7 +479,7 @@ export default function Checkout() {
                     component="span"
                     style={{ float: "right" }}
                   >
-                    <b style={{ fontSize: "16px" }}>₹ </b>12000
+                    <b style={{ fontSize: "16px" }}>₹ </b>{loanAmount}
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={12}>
