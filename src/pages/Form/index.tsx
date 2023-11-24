@@ -1,74 +1,61 @@
 import * as React from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import AppBar from "@mui/material/AppBar";
-import Container from "@mui/material/Container";
 import Toolbar from "@mui/material/Toolbar";
-import Paper from "@mui/material/Paper";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import Grid from "@mui/material/Grid";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
-import {
-  CircularProgress,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  InputLabel,
-  OutlinedInput,
-  Radio,
-  RadioGroup,
-  Slider,
-} from "@mui/material";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "shared/constants/routes";
 import FormService from "services/form";
 import Loader from "components/Loader";
-import PaymentModal from "components/PaymentModal";
+import { useCallback, useState } from "react";
+import BankDetails from "components/BankDetails";
+import PersonalDetails from "components/PersonalDetails";
+import LoanDetails from "components/LoanDetails";
+import LoanSuccess from "components/LoanSuccess";
+import { Steps } from "shared/constants";
 
-const marks = [
-  {
-    value: 50000,
-    label: "50000",
-  },
-  {
-    value: 100000,
-    label: "100000",
-  },
-  {
-    value: 150000,
-    label: "150000",
-  },
-  {
-    value: 200000,
-    label: "200000",
-  },
-];
+type UserDetails = {
+  user_id: number;
+  amount: number;
+  disbursal: number;
+  interest: number;
+  repayment: number;
+  service_charge: number;
+  received_amount: number;
+  gst: number;
+  month: number;
+  aadhaar_number: number;
+  pan_number: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  mobile_number: string;
+  birth_date: string;
+  gender: string;
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  pincode: string;
+  monthly_income: string;
+  profession: string;
+  bank_name: string;
+  account_holder_name: string;
+  account_number: string;
+  ifsc_code: string;
+};
 
 export default function Checkout() {
   const navigate = useNavigate();
   const token = Cookies.get("auth_token");
-  const [loanAmount, setLoanAmount] = React.useState<number>(50000);
-  const [loanTerm, setLoanTerm] = React.useState<number>(6);
-  const [applyNow, setApplyNow] = React.useState<boolean>(false);
-  const [showLoader, setShowLoader] = React.useState<boolean>(true);
-  const [checked, setChecked] = React.useState<boolean>(false);
-  const [isSuccess, setIsSuccess] = React.useState<boolean>(false);
-  const [aadhaarNumber, setAadhaarNumber] = React.useState<number | null>(null);
-  const [panNumber, setPanNumber] = React.useState<string>("");
-  const [aadhaarNumberError, setAadhaarNumberError] =
-    React.useState<boolean>(false);
-  const [panNumberError, setPanNumberError] = React.useState<boolean>(false);
-  const [paymentModalOpen, setPaymentModalOpen] =
-    React.useState<boolean>(false);
+  const [loanAmount, setLoanAmount] = useState<number>(50000);
+  const [loanTerm, setLoanTerm] = useState<number>(6);
+  const [showLoader, setShowLoader] = useState<boolean>(true);
+  const [userDetails, setUserDetails] = useState<UserDetails>();
 
-  const handleAmountChange = (event: Event, newValue: number | number[]) => {
-    if (typeof newValue === "number") {
-      setLoanAmount(newValue);
-    }
-  };
+  const [steps, setSteps] = useState(Steps.PersonalDetails);
 
   const calculateServiceCharge = React.useCallback(() => {
     switch (loanAmount) {
@@ -124,46 +111,43 @@ export default function Checkout() {
     return (loanAmount * 18) / 100;
   }, [loanAmount]);
 
-  const handleLoanTerm = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    value: string
-  ) => {
-    setLoanTerm(Number(value));
-  };
-
-  const handleApplyNow = async () => {
-    !aadhaarNumber && setAadhaarNumberError(true);
-    !panNumber && setPanNumberError(true);
-    if (aadhaarNumber && panNumber) {
-      const payload = {
-        user_id: Number(Cookies.get("user_id")),
-        amount: loanAmount,
-        month: loanTerm,
-        disbursal: loanAmount,
-        interest: calculateInterest(),
-        repayment: calculateRepayment(),
-        service_charge: calculateServiceCharge(),
-        received_amount: calculateRepayment(),
-        gst: calculateGST(),
-        aadhaar_number: aadhaarNumber,
-        pan_number: panNumber,
-      };
-      setShowLoader(true);
-      setApplyNow(true);
-      await FormService.AddForm(payload);
-      setTimeout(() => {
-        setIsSuccess(true);
-        setShowLoader(false);
-      }, 15000);
-    }
-  };
-
-  const handleTermsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked(event.target.checked);
-  };
-
-  const handlePayNow = () => {
-    setPaymentModalOpen(true);
+  const handleLoanDetailsSubmit = async () => {
+    const payload = {
+      user_id: Number(Cookies.get("user_id")),
+      amount: loanAmount,
+      month: loanTerm,
+      disbursal: loanAmount,
+      interest: calculateInterest(),
+      repayment: calculateRepayment(),
+      service_charge: calculateServiceCharge(),
+      received_amount: calculateRepayment(),
+      gst: calculateGST(),
+      aadhaar_number: userDetails!.aadhaar_number,
+      pan_number: userDetails!.pan_number,
+      first_name: userDetails!.first_name,
+      last_name: userDetails!.last_name,
+      email: userDetails!.email,
+      mobile_number: userDetails!.mobile_number,
+      birth_date: userDetails!.birth_date,
+      gender: userDetails!.gender,
+      address: userDetails!.address,
+      city: userDetails!.city,
+      state: userDetails!.state,
+      country: userDetails!.country,
+      pincode: userDetails!.pincode,
+      monthly_income: userDetails!.monthly_income,
+      profession: userDetails!.profession,
+      bank_name: userDetails!.bank_name,
+      account_holder_name: userDetails!.account_holder_name,
+      account_number: userDetails!.account_number,
+      ifsc_code: userDetails!.ifsc_code,
+    };
+    setShowLoader(true);
+    await FormService.AddForm(payload);
+    setTimeout(() => {
+      setSteps(Steps.LoanSuccess);
+      setShowLoader(false);
+    }, 15000);
   };
 
   const handleLogout = () => {
@@ -178,7 +162,7 @@ export default function Checkout() {
       .then((res) => {
         setShowLoader(false);
         if (res.data.data) {
-          setIsSuccess(true);
+          setSteps(Steps.LoanSuccess);
           setLoanAmount(Number(res.data.data.amount.split(".")[0]));
           setLoanTerm(res.data.data.month);
         }
@@ -196,32 +180,53 @@ export default function Checkout() {
     // eslint-disable-next-line
   }, []);
 
-  const handleAadhaarChange = (event: any) => {
-    let value = event.target.value;
-    value = value.replace(/[^0-9]/g, "");
-    if (value.length > 12) {
-      value = value.slice(0, 12);
+  const GetData = useCallback(() => {
+    switch (steps) {
+      case Steps.PersonalDetails:
+        return (
+          <PersonalDetails
+            setUserDetails={setUserDetails}
+            setSteps={setSteps}
+            setShowLoader={setShowLoader}
+          />
+        );
+      case Steps.BankDetails:
+        return (
+          <BankDetails
+            setUserDetails={setUserDetails}
+            setSteps={setSteps}
+            setShowLoader={setShowLoader}
+          />
+        );
+      case Steps.LoanDetails:
+        return (
+          <LoanDetails
+            loanAmount={loanAmount}
+            loanTerm={loanTerm}
+            gst={calculateGST()}
+            interest={calculateInterest()}
+            repayment={calculateRepayment()}
+            serviceCharge={calculateServiceCharge()}
+            setLoanAmount={setLoanAmount}
+            setLoanTerm={setLoanTerm}
+            handleNext={handleLoanDetailsSubmit}
+          />
+        );
+      case Steps.LoanSuccess:
+        return (
+          <LoanSuccess
+            loanAmount={loanAmount}
+            loanTerm={loanTerm}
+            gst={calculateGST()}
+            interest={calculateInterest()}
+            repayment={calculateRepayment()}
+            serviceCharge={calculateServiceCharge()}
+          />
+        );
+      default:
+        return <></>;
     }
-    if (value) {
-      setAadhaarNumberError(false);
-    } else {
-      setAadhaarNumberError(true);
-    }
-    setAadhaarNumber(value);
-  };
-
-  const handlePanChange = (event: any) => {
-    let value = event.target.value;
-    if (value.length > 10) {
-      value = value.slice(0, 10);
-    }
-    if (value) {
-      setPanNumberError(false);
-    } else {
-      setPanNumberError(true);
-    }
-    setPanNumber(value);
-  };
+  }, [steps, loanAmount, loanTerm]);
 
   if (!token) {
     return <></>;
@@ -251,467 +256,7 @@ export default function Checkout() {
           </Typography>
         </Toolbar>
       </AppBar>
-      {!isSuccess ? (
-        <Container
-          className="login-main"
-          component="main"
-          maxWidth="lg"
-          sx={{ mb: 12 }}
-        >
-          <Paper
-            variant="outlined"
-            className="card"
-            sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
-          >
-            <Typography
-              component="h1"
-              variant="h5"
-              align="center"
-              className="custom-color"
-            >
-              Loan Details
-            </Typography>
-
-            <React.Fragment>
-              <Grid container spacing={3} paddingTop={3}>
-                <Grid item xs={12} sm={6}>
-                  <FormControl
-                    variant="outlined"
-                    fullWidth
-                    color="success"
-                    sx={{ pb: "20px" }}
-                  >
-                    <InputLabel htmlFor="aadhaar_number">
-                      Aadhaar Number
-                    </InputLabel>
-                    <OutlinedInput
-                      name="aadhaar_number"
-                      type="number"
-                      value={aadhaarNumber}
-                      inputProps={{
-                        color: "success",
-                        style: {
-                          color: "white",
-                        },
-                        form: {
-                          autocomplete: "off",
-                        },
-                      }}
-                      label="Aadhaar Number"
-                      onChange={handleAadhaarChange}
-                    />
-                    {aadhaarNumberError && (
-                      <FormHelperText error className="custom-error">
-                        Aadhaar Number is required
-                      </FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <FormControl
-                    variant="outlined"
-                    fullWidth
-                    color="success"
-                    sx={{ pb: "20px" }}
-                  >
-                    <InputLabel htmlFor="pan_number">Pan Number</InputLabel>
-                    <OutlinedInput
-                      name="pan_number"
-                      type="text"
-                      inputProps={{
-                        color: "success",
-                        style: {
-                          color: "white",
-                        },
-                        form: {
-                          autocomplete: "off",
-                        },
-                      }}
-                      value={panNumber}
-                      label="Pan Number"
-                      onChange={handlePanChange}
-                    />
-                    {panNumberError && (
-                      <FormHelperText error className="custom-error">
-                        Pan Number is required
-                      </FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-              </Grid>
-              <Typography
-                variant="h6"
-                gutterBottom
-                marginTop={"15px"}
-                marginBottom={0}
-                fontSize="14px"
-                className="custom-color"
-              >
-                Loan Amount: <b style={{ fontSize: "16px" }}>₹ </b>
-                {loanAmount}
-              </Typography>
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={12}>
-                  <FormControl variant="outlined" fullWidth sx={{ pb: "20px" }}>
-                    <Slider
-                      min={50000}
-                      max={200000}
-                      value={loanAmount}
-                      onChange={handleAmountChange}
-                      step={null}
-                      marks={marks}
-                      className="custom-color"
-                      classes={{ markLabel: "custom-color" }}
-                      aria-label="Range"
-                      valueLabelDisplay="auto"
-                    />
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={12}>
-                  <FormControl fullWidth>
-                    <FormLabel
-                      id="demo-row-radio-buttons-group-label"
-                      style={{ fontSize: "14px" }}
-                      className="custom-color"
-                    >
-                      Loan Term
-                    </FormLabel>
-                    <RadioGroup
-                      row
-                      aria-labelledby="demo-row-radio-buttons-group-label"
-                      name="row-radio-buttons-group"
-                      onChange={handleLoanTerm}
-                      value={loanTerm}
-                    >
-                      <Grid container spacing={3}>
-                        <Grid item xs={6} md={3}>
-                          <FormControlLabel
-                            value={6}
-                            control={
-                              <Radio
-                                size="small"
-                                sx={{
-                                  color: "#008264",
-                                  "&.Mui-checked": {
-                                    color: "#008264",
-                                  },
-                                }}
-                              />
-                            }
-                            className="custom-radio"
-                            label="6 Months"
-                          />
-                        </Grid>
-                        <Grid item xs={6} md={3}>
-                          <FormControlLabel
-                            value={12}
-                            control={
-                              <Radio
-                                size="small"
-                                sx={{
-                                  color: "#008264",
-                                  "&.Mui-checked": {
-                                    color: "#008264",
-                                  },
-                                }}
-                              />
-                            }
-                            className="custom-radio"
-                            label="12 Months"
-                          />
-                        </Grid>
-                        <Grid item xs={6} md={3}>
-                          <FormControlLabel
-                            value={24}
-                            control={
-                              <Radio
-                                size="small"
-                                sx={{
-                                  color: "#008264",
-                                  "&.Mui-checked": {
-                                    color: "#008264",
-                                  },
-                                }}
-                              />
-                            }
-                            className="custom-radio"
-                            label="24 Months"
-                          />
-                        </Grid>
-                        <Grid item xs={6} md={3}>
-                          <FormControlLabel
-                            value={36}
-                            control={
-                              <Radio
-                                size="small"
-                                sx={{
-                                  color: "#008264",
-                                  "&.Mui-checked": {
-                                    color: "#008264",
-                                  },
-                                }}
-                              />
-                            }
-                            className="custom-radio"
-                            label="36 Months"
-                          />
-                        </Grid>
-                      </Grid>
-                    </RadioGroup>
-                  </FormControl>
-                </Grid>
-              </Grid>
-            </React.Fragment>
-          </Paper>
-          <Paper
-            variant="outlined"
-            className="card"
-            sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
-          >
-            <React.Fragment>
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={12}>
-                  <Typography variant="body1" component="span">
-                    Disbursal
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    component="span"
-                    style={{ float: "right" }}
-                  >
-                    <b style={{ fontSize: "16px" }}>₹ </b>{loanAmount}
-                  </Typography>
-                </Grid>
-                <Grid item xs={12} sm={12}>
-                  <Typography variant="body1" component="span">
-                    Interest
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    component="span"
-                    style={{ float: "right" }}
-                  >
-                    <b style={{ fontSize: "16px" }}>₹ </b> {calculateInterest()}
-                  </Typography>
-                </Grid>
-                <Grid item xs={12} sm={12}>
-                  <Typography variant="body1" component="span">
-                    Repayment{`(-${calculateServiceCharge()})`}
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    component="span"
-                    style={{ float: "right" }}
-                  >
-                    <b style={{ fontSize: "16px" }}>₹ </b>{" "}
-                    {calculateRepayment()}
-                  </Typography>
-                </Grid>
-                <Grid item xs={12} sm={12}>
-                  <Typography variant="body1" component="span">
-                    Service Charge
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    component="span"
-                    style={{ float: "right" }}
-                  >
-                    <b style={{ fontSize: "16px" }}>₹ </b>
-                    {calculateServiceCharge()}
-                  </Typography>
-                </Grid>
-              </Grid>
-            </React.Fragment>
-          </Paper>
-          <Button
-            type="button"
-            variant="contained"
-            className="custom-bg-green"
-            style={{ float: "right" }}
-            fullWidth
-            onClick={handleApplyNow}
-            disabled={applyNow}
-          >
-            {applyNow ? (
-              <>
-                Loading{" "}
-                <CircularProgress className="apply-btn-loader" size={"small"} />
-              </>
-            ) : (
-              "Apply Now"
-            )}
-          </Button>
-        </Container>
-      ) : (
-        <Container component="main" maxWidth="lg" sx={{ mb: 12 }}>
-          <Paper
-            variant="outlined"
-            className="card"
-            sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
-          >
-            <React.Fragment>
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={12}>
-                  <Typography
-                    variant="body1"
-                    style={{
-                      color: "white",
-                      textAlign: "center",
-                      fontSize: "28px",
-                    }}
-                  >
-                    Congratulations !!
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    style={{ color: "#dbdbdb", textAlign: "center" }}
-                  >
-                    New loan Eligibility has been
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    style={{ fontSize: "24px", textAlign: "center" }}
-                  >
-                    <b style={{ fontSize: "24px" }}>₹ </b>
-                    {calculateRepayment()}
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    style={{ color: "#adabab", textAlign: "center" }}
-                  >
-                    As per security tax rule, you get 18% GST need to cut
-                  </Typography>
-                </Grid>
-              </Grid>
-            </React.Fragment>
-          </Paper>
-          <Paper
-            variant="outlined"
-            className="card"
-            sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
-          >
-            <React.Fragment>
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={12}>
-                  <Typography
-                    variant="body1"
-                    style={{
-                      color: "white",
-                      textAlign: "center",
-                      fontSize: "14px",
-                    }}
-                  >
-                    Your loan options
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    style={{ fontSize: "24px", textAlign: "center" }}
-                  >
-                    <b style={{ fontSize: "24px" }}>₹ </b>
-                    {calculateRepayment()} / {loanTerm} Months
-                  </Typography>
-                </Grid>
-              </Grid>
-            </React.Fragment>
-          </Paper>
-          <Paper
-            variant="outlined"
-            className="card"
-            sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
-          >
-            <React.Fragment>
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={12}>
-                  <Typography variant="body1" component="span">
-                    Interest
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    component="span"
-                    style={{ float: "right" }}
-                  >
-                    <b style={{ fontSize: "16px" }}>₹ </b> {calculateInterest()}
-                  </Typography>
-                </Grid>
-                <Grid item xs={12} sm={12}>
-                  <Typography variant="body1" component="span">
-                    Repayment
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    component="span"
-                    style={{ float: "right" }}
-                  >
-                    <b style={{ fontSize: "16px" }}>₹ </b>{" "}
-                    {calculateRepayment()}
-                  </Typography>
-                </Grid>
-                <Grid item xs={12} sm={12}>
-                  <Typography variant="body1" component="span">
-                    Received Amount
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    component="span"
-                    style={{ float: "right" }}
-                  >
-                    <b style={{ fontSize: "16px" }}>₹ </b>{" "}
-                    {calculateRepayment()}
-                  </Typography>
-                </Grid>
-                <Grid item xs={12} sm={12}>
-                  <Typography variant="body1" component="span">
-                    GST
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    component="span"
-                    style={{ float: "right" }}
-                  >
-                    <b style={{ fontSize: "16px" }}>₹ </b>
-                    {calculateGST()}
-                  </Typography>
-                </Grid>
-              </Grid>
-            </React.Fragment>
-          </Paper>
-          <Typography variant="body1" component="b" style={{ color: "white" }}>
-            <Checkbox
-              checked={checked}
-              onChange={handleTermsChange}
-              sx={{
-                color: "#008264",
-                "&.Mui-checked": {
-                  color: "#008264",
-                },
-              }}
-              inputProps={{ "aria-label": "controlled" }}
-            />
-            <b>
-              I agree{" "}
-              <a href="/#" className="custom-color">
-                Terms & Conditions
-              </a>
-            </b>
-          </Typography>
-          <Button
-            type="button"
-            variant="contained"
-            className="custom-bg-green"
-            style={{ float: "right", marginBottom: "15px" }}
-            fullWidth
-            onClick={handlePayNow}
-            disabled={!checked}
-          >
-            Pay Now
-          </Button>
-        </Container>
-      )}
-      <PaymentModal
-        isOpen={paymentModalOpen}
-        money={calculateServiceCharge()}
-        handleClose={() => setPaymentModalOpen(false)}
-      />
+      {GetData()}
     </React.Fragment>
   );
 }

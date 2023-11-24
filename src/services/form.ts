@@ -4,15 +4,32 @@ import httpClient from "services/httpClient";
 type AddFormRequest = {
   user_id: number;
   amount: number;
-  month: number;
   disbursal: number;
   interest: number;
   repayment: number;
   service_charge: number;
   received_amount: number;
   gst: number;
+  month: number;
   aadhaar_number: number;
   pan_number: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  mobile_number: string;
+  birth_date: string;
+  gender: string;
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  pincode: string;
+  monthly_income: string;
+  profession: string;
+  bank_name: string;
+  account_holder_name: string;
+  account_number: string;
+  ifsc_code: string;
 };
 
 type LoanDetails = {
