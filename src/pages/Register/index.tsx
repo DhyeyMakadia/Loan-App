@@ -33,20 +33,30 @@ const RegisterPage = () => {
   const validationSchema = Yup.object().shape({
     name: Yup.string().required(ValidationMessage.NameRequired),
     mobile_number: Yup.string().required(ValidationMessage.MobileRequired),
-    password: Yup.string().required(ValidationMessage.PasswordRequired),
-    confirmPassword: Yup.string()
-      .oneOf(
-        [Yup.ref("password"), ""],
-        ValidationMessage.InvalidConfirmPassword
-      )
-      .required(ValidationMessage.PasswordRequired),
+    password: Yup.string()
+      .transform((value) => (!value ? null : value))
+      .nullable(),
+    confirmPassword: Yup.string().when("password", (password, field) => {
+      if (password[0]) {
+        return field
+          .required(ValidationMessage.InvalidConfirmPassword)
+          .oneOf(
+            [Yup.ref("password")],
+            ValidationMessage.InvalidConfirmPassword
+          );
+      } else {
+        return field;
+      }
+    }),
   });
 
   const handleSignIn = (values: FormikValues) => {
-    const payload = {
+    let payload: any = {
       mobile_number: values.mobile_number,
-      password: values.password,
     };
+    if (values.password) {
+      payload.password = values.password;
+    }
     AuthService.signIn(payload)
       .then((response) => {
         if (!response.data || !response.data.authToken) {
@@ -236,7 +246,7 @@ const RegisterPage = () => {
                     sx={{ pb: "12px" }}
                     error={!!(errors.password && touched.password)}
                   >
-                    <InputLabel htmlFor="password">Password</InputLabel>
+                    <InputLabel htmlFor="password">Password (Optional)</InputLabel>
                     <OutlinedInput
                       name="password"
                       type={showPassword ? "text" : "password"}
@@ -268,7 +278,7 @@ const RegisterPage = () => {
                           </IconButton>
                         </InputAdornment>
                       }
-                      label="Password"
+                      label="Password (Optional)"
                     />
                     <FormHelperText error>
                       <ErrorMessage name="password" />
@@ -284,7 +294,7 @@ const RegisterPage = () => {
                     }
                   >
                     <InputLabel htmlFor="confirmPassword">
-                      Confirm Password
+                      Confirm Password (Optional)
                     </InputLabel>
                     <OutlinedInput
                       name="confirmPassword"
@@ -321,7 +331,7 @@ const RegisterPage = () => {
                           </IconButton>
                         </InputAdornment>
                       }
-                      label="Confirm Password"
+                      label="Confirm Password (Optional)"
                     />
                     <FormHelperText error>
                       <ErrorMessage name="confirmPassword" />

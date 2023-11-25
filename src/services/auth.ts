@@ -9,7 +9,7 @@ type SignUpRequest = {
 
 type Request = {
   mobile_number: string;
-  password: string;
+  // password: string;
 };
 
 type SignUpResponse = {

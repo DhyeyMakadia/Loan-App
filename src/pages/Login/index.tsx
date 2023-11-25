@@ -4,12 +4,10 @@ import {
   FormControl,
   InputLabel,
   InputAdornment,
-  IconButton,
   Avatar,
   OutlinedInput,
   FormHelperText,
   CircularProgress,
-  withStyles,
 } from "@mui/material";
 import { images } from "../../shared/assets/images/index";
 import { ErrorMessage, Form, Formik, FormikValues } from "formik";
@@ -27,18 +25,18 @@ import { ROUTES } from "shared/constants/routes";
 const LoginPage = () => {
   const { addToast } = useToasts();
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState<boolean>(false);
+  // const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showLoader, setShowLoader] = useState<boolean>(false);
 
   const validationSchema = Yup.object().shape({
     mobile_number: Yup.string().required(ValidationMessage.MobileRequired),
-    password: Yup.string().required(ValidationMessage.PasswordRequired),
+    // password: Yup.string().required(ValidationMessage.PasswordRequired),
   });
 
   const handleSignIn = (values: FormikValues) => {
     const payload = {
       mobile_number: values.mobile_number,
-      password: values.password,
+      // password: values.password,
     };
     setShowLoader(true);
     AuthService.signIn(payload)
@@ -163,7 +161,7 @@ const LoginPage = () => {
                       <ErrorMessage name="mobile_number" />
                     </FormHelperText>
                   </FormControl>
-                  <FormControl
+                  {/* <FormControl
                     variant="outlined"
                     fullWidth
                     color="success"
@@ -209,7 +207,7 @@ const LoginPage = () => {
                     <FormHelperText error>
                       <ErrorMessage name="password" />
                     </FormHelperText>
-                  </FormControl>
+                  </FormControl> */}
                   <Button
                     variant="contained"
                     type="submit"
