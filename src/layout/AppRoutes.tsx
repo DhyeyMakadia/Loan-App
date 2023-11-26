@@ -5,7 +5,7 @@ import { ROUTES } from "shared/constants/routes";
 
 const LoginPage = lazy(() => import("pages/Login/index"));
 
-const RegisterPage = lazy(() => import("pages/Register/index"));
+// const RegisterPage = lazy(() => import("pages/Register/index"));
 
 const FormPage = lazy(() => import("pages/Form/index"));
 
@@ -14,7 +14,7 @@ const AppRoutes: FC = () => (
     <Suspense fallback={<Loader />}>
       <Routes>
         <Route path={ROUTES.LOGIN} element={<LoginPage />} />
-        <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
+        {/* <Route path={ROUTES.REGISTER} element={<RegisterPage />} /> */}
         <Route path={ROUTES.FORM} element={<FormPage />} />
 
         {/* keep least always */}

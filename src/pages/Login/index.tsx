@@ -228,7 +228,7 @@ const LoginPage = () => {
                       "Login"
                     )}
                   </Button>
-                  <div
+                  {/* <div
                     style={{
                       color: "WHITE",
                       textAlign: "center",
@@ -242,7 +242,7 @@ const LoginPage = () => {
                     >
                       Create now
                     </Link>
-                  </div>
+                  </div> */}
                 </Form>
               )}
             </Formik>
