@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import {
   Container,
   Paper,
@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { Form, Formik, FormikValues } from "formik";
 import PaymentModal from "components/PaymentModal";
+import FormService, { UpiDetailsData } from "services/form";
 
 type Props = {
   loanAmount: number;
@@ -28,10 +29,26 @@ const LoanSuccess: FC<Props> = ({
   serviceCharge,
 }) => {
   const [paymentModalOpen, setPaymentModalOpen] = useState<boolean>(false);
+  const [upiDetails, setUpiDetails] = useState<UpiDetailsData>({
+    upi_id: "",
+    merchant_name: "",
+  });
 
   const initialValues = {
     agreeTerms: false,
   };
+
+  const getUpiDetails = () => {
+    FormService.GetUpiDetails().then((res) => {
+      if (res.data.success) {
+        setUpiDetails(res.data.data);
+      }
+    });
+  };
+
+  useEffect(() => {
+    getUpiDetails();
+  }, []);
 
   const handleSubmit = (values: FormikValues) => {
     if (values.agreeTerms) {
@@ -215,6 +232,7 @@ const LoanSuccess: FC<Props> = ({
         isOpen={paymentModalOpen}
         money={serviceCharge}
         handleClose={() => setPaymentModalOpen(false)}
+        upiDetails={upiDetails}
       />
     </>
   );

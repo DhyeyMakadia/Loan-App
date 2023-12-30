@@ -45,6 +45,17 @@ type LoanAmountResponse = {
   data: LoanDetails;
 };
 
+export type UpiDetailsData = {
+  upi_id: string;
+  merchant_name: string;
+}
+
+type UpiDetailsResponse = {
+  success: boolean;
+  message: string;
+  data: UpiDetailsData
+};
+
 type AddFormResponse = any; // TODO
 
 class FormService {
@@ -53,11 +64,13 @@ class FormService {
   ): Promise<AxiosResponse<AddFormResponse>> =>
     httpClient.post(`/addForm`, payload);
 
-  // TODO
   GetLoanAmount = async (
     id: number
   ): Promise<AxiosResponse<LoanAmountResponse>> =>
     httpClient.get(`/loanAmount/${id}`);
+
+  GetUpiDetails = async (): Promise<AxiosResponse<UpiDetailsResponse>> =>
+    httpClient.get("/upiCredentials");
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export

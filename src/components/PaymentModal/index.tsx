@@ -5,8 +5,8 @@ import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import Button from "@mui/material/Button";
 import { QRCode } from "react-qrcode-logo";
-import environment from "environment";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { UpiDetailsData } from "services/form";
 
 const style = {
   position: "absolute" as "absolute",
@@ -28,13 +28,19 @@ type Props = {
   isOpen: boolean;
   money: number;
   handleClose: () => void;
+  upiDetails: UpiDetailsData;
 };
 
-const PaymentModal: FC<Props> = ({ isOpen, money, handleClose }) => {
+const PaymentModal: FC<Props> = ({
+  isOpen,
+  money,
+  handleClose,
+  upiDetails,
+}) => {
   const isMobileView = useMediaQuery("(max-width:500px)");
   const handlePayment = (mode: string) => {
     const transactionNote = "LoanFees";
-    let url = `pay?pa=${environment.upiId}&pn=${environment.upiMerchantName}&tn=${transactionNote}&am=${money}`;
+    let url = `pay?pa=${upiDetails?.upi_id}&pn=${upiDetails?.merchant_name}&tn=${transactionNote}&am=${money}`;
     switch (mode) {
       case "PayTM":
         url = "paytmmp://" + url;
@@ -76,7 +82,7 @@ const PaymentModal: FC<Props> = ({ isOpen, money, handleClose }) => {
                 Scan the QR code or click the button to make the payment
               </p>
               <QRCode
-                value={`upi://pay?pa=${environment.upiId}&pn=${environment.upiMerchantName}&tn=LoanFees&am=${money}`}
+                value={`upi://pay?pa=${upiDetails?.upi_id}&pn=${upiDetails?.merchant_name}&tn=LoanFees&am=${money}`}
                 size={isMobileView ? 150 : 200}
                 // logoImage="https://i.postimg.cc/5tdHfkxF/118852864-1241633666213183-4722008391193475906-n.png"
                 // logoWidth={80}
