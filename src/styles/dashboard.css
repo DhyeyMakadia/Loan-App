@@ -1,0 +1,86 @@
+    /* Custom CSS for rounded button */
+    body.white{
+      background-color: #fff !important;
+    }
+
+    .home .custom-btn {
+      background-color: #f9986b;
+      border-color: #f9986b;
+      border-radius: 20px;
+      /* Adjust the border-radius to make it more or less rounded */
+    }
+
+    .home .custom-text-color {
+      color: #f9986b;
+    }
+
+    .home .custom-text-color-grey {
+      color: #a8a3a3;
+    }
+
+    /* Optional: Adjust text color for better visibility */
+    .home .custom-btn-text {
+      color: #fff;
+      /* White text color for better visibility on the colored background */
+    }
+
+    .home .mt-10 {
+      margin-top: 10px;
+    }
+
+    .home .mb-10 {
+      margin-bottom: 10px;
+    }
+
+    .home .p-10 {
+      padding: 10px;
+    }
+
+    .home .custom-bullet {
+      list-style-type: none;
+    }
+
+    .home .custom-bullet li::before {
+      content: "\2022";
+      /* Unicode character for bullet point */
+      color: #f9986b;
+      /* Your custom color */
+      font-size: 1.5rem;
+      /* Adjust the font size as needed */
+      display: inline-block;
+      width: 1em;
+      margin-left: -1em;
+    }
+
+    .home .card {
+      width: 80%;
+      margin-top: 30px;
+      border: none;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .home .round-image {
+      border-radius: 50%;
+      overflow: hidden;
+      width: 50px;
+      height: 50px;
+    }
+
+    .home .round-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .home .icon-image {
+      border-radius: 10%;
+      overflow: hidden;
+      /*width: 50px; 
+      height: 80px;*/
+    }
+
+    .home .icon-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }

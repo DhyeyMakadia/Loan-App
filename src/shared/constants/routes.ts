@@ -1,5 +1,6 @@
 export const ROUTES = {
-  LOGIN: "/",
+  HOME: "/",
+  LOGIN: "/login",
   REGISTER: "/register",
   FORM: "/form",
 };

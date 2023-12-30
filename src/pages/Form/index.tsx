@@ -1,4 +1,5 @@
 import * as React from "react";
+import "../../styles/index.css";
 import CssBaseline from "@mui/material/CssBaseline";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";

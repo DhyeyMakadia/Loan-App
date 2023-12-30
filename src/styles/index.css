@@ -146,7 +146,7 @@ body {
   font-weight: 400;
   font-size: 15px;
   line-height: 20px;
-  background-color: #4c4c4c !important;
+  background-color: #4c4c4c ;
   color: #4b4b4b;
   -ms-overflow-style: scrollbar;
   -webkit-font-smoothing: subpixel-antialiased;
