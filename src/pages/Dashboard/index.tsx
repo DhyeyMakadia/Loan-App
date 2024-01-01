@@ -46,10 +46,10 @@ const Dashboard = () => {
           </div>
           <div className="row" style={{ marginTop: "50px" }}>
             <div className="col-md-12">
-              <h3>Personal Loan - Apply for an Instant Personal Loan Online</h3>
+              <h3>Loan Guide - Apply for an Instant Personal Loan Online</h3>
             </div>
             <div className="col-md-12 custom-text-color-grey">
-              Manage all of life’s instant upgrades with Online Personal Loan
+              Manage all of life’s instant upgrades with Online Loan Guide
               from Fibe. Get up to ₹5 lakh in just 2 minutes.
             </div>
           </div>
