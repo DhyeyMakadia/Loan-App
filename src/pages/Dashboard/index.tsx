@@ -10,12 +10,12 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    document.body.classList.add("white")
+    document.body.classList.add("white");
     return () => {
-      document.body.classList.remove("white")
-    }
-  }, [])
-  
+      document.body.classList.remove("white");
+    };
+  }, []);
+
   return (
     <React.Fragment>
       <div className="home">
@@ -46,11 +46,11 @@ const Dashboard = () => {
           </div>
           <div className="row" style={{ marginTop: "50px" }}>
             <div className="col-md-12">
-              <h3>Loan Guide - Apply for an Instant Personal Loan Online</h3>
+              <h3>Loan Guide - Apply for an Instant Loan Guide Online</h3>
             </div>
             <div className="col-md-12 custom-text-color-grey">
-              Manage all of life’s instant upgrades with Online Loan Guide
-              from Fibe. Get up to ₹5 lakh in just 2 minutes.
+              Manage all of life’s instant upgrades with Online Loan Guide from
+              Fibe. Get up to ₹5 lakh in just 2 minutes.
             </div>
           </div>
           <div className="row" style={{ marginTop: "30px" }}>
@@ -155,15 +155,15 @@ const Dashboard = () => {
           </div>
           <div className="row" style={{ marginTop: "50px" }}>
             <div className="col-md-12 text-center mt-10">
-              <h3>Apply for a Personal Loan for All Your Needs</h3>
+              <h3>Apply for a Loan Guide for All Your Needs</h3>
             </div>
             <div className="col-md-12 custom-text-color-grey text-center mt-10">
               Whether it’s a last-minute travel plan or a medical emergency – an
-              online personal loan is an easy solution to all your financial
-              needs. You can apply for a personal loan online without submitting
-              physical paperwork. With over five lakh happy customers, Fibe is
-              emerging as one of the top platforms for getting instant Personal
-              loans with a simple and safe application process.
+              online Loan Guide is an easy solution to all your financial needs.
+              You can apply for a Loan Guide online without submitting physical
+              paperwork. With over five lakh happy customers, Fibe is emerging
+              as one of the top platforms for getting instant Loan Guide
+              with a simple and safe application process.
             </div>
             <div className="col-md-12 custom-text-color-grey text-center mt-10">
               Fibe is one of India’s trusted digital lending platforms where you
@@ -180,17 +180,17 @@ const Dashboard = () => {
             style={{ marginTop: "50px", backgroundColor: "#f9fafc" }}
           >
             <div className="col-md-12 text-center mt-10">
-              <h3>Personal Loan Eligibility Criteria</h3>
+              <h3>Loan Guide Eligibility Criteria</h3>
             </div>
             <div className="col-md-12 custom-text-color-grey text-center mt-10">
-              Fibe offers the best personal loans with easy-to-meet eligibility
+              Fibe offers the best Loan Guides with easy-to-meet eligibility
               criteria. Unlike other banks or non-bank financial corporations,
-              in Fibe, you can apply for instant personal loan online with
-              minimal documentation
+              in Fibe, you can apply for instant Loan Guide online with minimal
+              documentation
             </div>
             <div className="col-md-12 custom-text-color-grey text-center mt-10">
               Fibe is India’s trusted platform for seamless and secure loans.
-              Applying for instant personal loans by logging into our official
+              Applying for instant Loan Guides by logging into our official
               website or download the application.
             </div>
             <div className="col-md-12 mt-10">
@@ -220,20 +220,20 @@ const Dashboard = () => {
 
           <div className="row" style={{ marginTop: "50px" }}>
             <div className="col-md-12 text-center mt-10">
-              <h3>Documents Required for a Personal Loan</h3>
+              <h3>Documents Required for a Loan Guide</h3>
             </div>
             <div className="col-md-12 custom-text-color-grey text-center mt-10">
               The quick online loan application process from Fibe is super easy
               and quick. The best part? You get a loan in 2 minutes. The
-              documents required for a personal loan depend on one lender to
+              documents required for a Loan Guide depend on one lender to
               another.
             </div>
             <div className="col-md-12 custom-text-color-grey text-center mt-10">
-              At Fibe, get easy personal loan by just uploading some basic
+              At Fibe, get easy Loan Guide by just uploading some basic
               documents as mentioned on the right.
             </div>
             <div className="col-md-12 custom-text-color-grey text-center mt-10">
-              Get your instant personal loan now!
+              Get your instant Loan Guide now!
             </div>
           </div>
           <div className="row" style={{ marginTop: "50px" }}>
