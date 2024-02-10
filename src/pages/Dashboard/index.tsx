@@ -8,6 +8,9 @@ const Dashboard = () => {
   const redirectToLogin = () => {
     navigate(ROUTES.LOGIN);
   };
+  const redirectToPrivacyPolicy = () => {
+    navigate(ROUTES.PrivacyPolicy);
+  };
 
   useEffect(() => {
     document.body.classList.add("white");
@@ -23,17 +26,25 @@ const Dashboard = () => {
           <nav className="navbar navbar-expand-lg navbar-light bg-light">
             <div className="container">
               <Link to={ROUTES.HOME}>
+                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                 <a className="navbar-brand justify-content-start custom-text-color">
                   Loan Manager
                 </a>
               </Link>
               <div className="justify-content-end" id="navbarNav">
-                <button
-                  className="btn custom-btn custom-btn-text"
-                  onClick={redirectToLogin}
-                >
-                  Login
-                </button>
+                <div>
+                  <div style={{ display: "inline-block", marginRight: "20px" }}>
+                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                    <a style={{cursor: "pointer"}} onClick={redirectToPrivacyPolicy}>privacy policy</a>
+                  </div>
+                  <button
+                    style={{ display: "inline-block" }}
+                    className="btn custom-btn custom-btn-text"
+                    onClick={redirectToLogin}
+                  >
+                    Login
+                  </button>
+                </div>
               </div>
             </div>
           </nav>
@@ -162,8 +173,8 @@ const Dashboard = () => {
               online Loan Guide is an easy solution to all your financial needs.
               You can apply for a Loan Guide online without submitting physical
               paperwork. With over five lakh happy customers, Fibe is emerging
-              as one of the top platforms for getting instant Loan Guide
-              with a simple and safe application process.
+              as one of the top platforms for getting instant Loan Guide with a
+              simple and safe application process.
             </div>
             <div className="col-md-12 custom-text-color-grey text-center mt-10">
               Fibe is one of India’s trusted digital lending platforms where you
